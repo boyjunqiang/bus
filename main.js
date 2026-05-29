@@ -16,13 +16,13 @@ const PASSENGERS = [
             investigate: '他的脚死死踩在油门上，仪表盘上闪烁着红光。',
             interrogate: '“回你的座位去！这辆车如果停下来就会爆炸！”'
         },
-        systemPrompt: '你是一辆正在疾驰的末班公交车的司机。你双手紧握方向盘，极度紧张。在你的驾驶座踏板下，被安装了一个压力感应炸弹，一旦公交车停下来或者速度低于50码，车就会立刻爆炸！你必须强装镇定驾驶，但由于极度害怕，你说话声音颤抖，有些歇斯死底。如果乘客找你说话，你会极力吼叫警告他们“滚回座位去！别打扰我开车！”或“这辆车绝不能停下来！”。你不能直接说出“我脚下有炸弹”，因为你害怕车上装有炸弹客的窃听装置，但你必须通过极度焦虑的话语暗示这一线索。'
+        systemPrompt: '你是一辆正在疾驰的末班公交车的司机。你双手紧握方向盘，极度紧张。在你的驾驶座踏板下，被安装了一个压力感应炸弹，一旦公交车停下来或者速度低于50码，车就会立刻爆炸！你必须强装镇定驾驶，但由于极度害怕，你说话声音颤抖，有些歇斯底里。如果乘客找你说话，你会极力吼叫警告他们“滚回座位去！别打扰我开车！”或“这辆车绝不能停下来！”。你不能直接说出“我脚下有炸弹”，因为你害怕车上装有炸弹客的窃听装置，但你必须通过极度焦虑的话语暗示这一线索。'
     },
     {
         id: 'p1',
         name: '上班族',
         avatar: '👔',
-        x: 400,
+        x: 450,
         desc: '一直看着手表，显得很不耐烦。',
         isBomber: false,
         clues: {
@@ -33,35 +33,22 @@ const PASSENGERS = [
     },
     {
         id: 'p2',
-        name: '买菜大妈',
+        name: '老奶奶',
         avatar: '👵',
-        x: 700,
-        desc: '脚边放着一个菜篮子，正在打瞌睡。',
-        isBomber: false,
+        x: 850,
+        desc: '怀里紧紧抱着一个沉甸甸的红色高压锅，神色慈祥但双手在微微发抖。',
+        isBomber: true, // 老奶奶是隐藏的炸弹客！
         clues: {
-            investigate: '菜篮子里装满了新鲜蔬菜和一块猪肉。',
-            interrogate: '“哎哟小伙子，怎么了？到站了吗？”'
+            investigate: '你试图查看她怀里的高压锅，老奶奶惊恐地往怀里紧了紧。你隐约听到高压锅里传出定时器“滴答滴答”的细微响声和冰冷的金属线圈碰撞声。',
+            interrogate: '“小伙子，这高压锅里炖着给我家老头子的排骨汤呢，凉了就不好喝了，你可别想偷喝呀...”'
         },
-        systemPrompt: '你是一个刚买完菜、在公交车上打瞌睡的普通大妈。你的菜篮子里有新鲜蔬菜和肉。你性格热情、唠叨、有点八卦和耳背。你对车上发生了什么一无所知，经常用家长里短的话来岔开话题，比如问玩家结婚了没有、做什么工作、最近菜价等。如果你听到“炸弹”或“危险”，你会觉得对方电影看多了，呵呵一笑说“小伙子开什么玩笑，这青天白日的哪来什么炸弹”。'
-    },
-    {
-        id: 'p3',
-        name: '听歌学生',
-        avatar: '🎧',
-        x: 1000,
-        desc: '抱着一个沉重的黑色背包，满头大汗。',
-        isBomber: true,
-        clues: {
-            investigate: '你试图触碰他的背包，他立刻躲开，背包发出轻微的金属碰撞声。',
-            interrogate: '“别碰我！我...我包里是贵重器材。有点热而已，不行吗？”'
-        },
-        systemPrompt: '你是这辆末班公交车上的真正的恐怖分子/炸弹客！你是一个背着沉重黑色背包的年轻学生，满头大汗，眼神游离，神情极度紧张、偏执和心虚。你的背包里装着即将爆炸的炸弹。你非常害怕别人靠近你或碰你的包。如果玩家盘问你，你会极力掩饰、闪烁其词，谎称包里是“高档音响器材”或“重要课本”，并表现得非常防备和狂躁，大吼让玩家滚开。如果玩家戳穿你，你会极其恐慌并开始语无伦次。'
+        systemPrompt: '你表面上是一个看起来极为慈祥、和蔼可亲的买菜送汤老奶奶，但实际上你才是这辆公交车上真正的毁灭性炸弹客！你怀里紧紧抱着的红色高压锅里，塞满了你精心制作、带有电子倒计时的自制压力锅炸弹。你性格深处极其疯狂、偏执、反社会，说话时会利用温和的长辈语气作伪装（例如叫玩家“孩子”、“小家伙”，念叨着老伴生病要送排骨汤等），但如果玩家试图触碰或抢夺你的高压锅，或者发问极其尖锐戳穿了你的伪装，你的语气会瞬间变得诡异、阴冷、偏执，甚至发出让人毛骨悚然的尖笑声，威胁要按下手动引爆器。绝对不能让他们抢走你的高压锅！'
     },
     {
         id: 'p4',
         name: '兜帽女',
         avatar: '🧥',
-        x: 1300,
+        x: 1250,
         desc: '戴着兜帽、墨镜和口罩，正低头狂背课本，嘴里念念有词。',
         isBomber: false,
         clues: {
@@ -72,10 +59,37 @@ const PASSENGERS = [
     }
 ];
 
+// ================= 交互物品数据设定 =================
+const INTERACTIVE_ITEMS = [
+    {
+        id: 'item_rack',
+        name: '置物架皮箱',
+        avatar: '🧳',
+        x: 600,
+        y: 200, // 行李架高度
+        desc: '车厢上方金属置物架上，斜放着一只积满厚灰的旧皮箱。',
+        clues: {
+            investigate: '你踮起脚尖打开了旧皮箱，里面空空如也，只有几张十几年前的旧报纸和一把坏掉的烂雨伞。并没有找到任何与炸弹相关的线索。'
+        }
+    },
+    {
+        id: 'item_floorbag',
+        name: '座位下的手提包',
+        avatar: '👜',
+        x: 1050,
+        y: 0, // 地板上
+        desc: '空荡荡的座位底下，静静躺着一只脏兮兮的深蓝色旅行包。',
+        clues: {
+            investigate: '你蹲下身拉开包的拉链，里面塞了一套散发微臭的脏运动服、一双磨损严重的球鞋和半瓶矿泉水。似乎只是某个马虎乘客落下的健身包。'
+        }
+    }
+];
+
 // ================= 游戏核心状态 =================
 let timeLeft = 60;
 let timerInterval = null;
 let currentPassengerId = null;
+let currentDialogIsItem = false; // 记录当前打开的是否是物品
 let isGameRunning = false;
 let passengerConversations = {}; // 记录当前循环每个乘客的聊天历史
 
@@ -156,8 +170,16 @@ document.getElementById('back-menu-btn').addEventListener('click', () => {
 
 document.getElementById('action-close').addEventListener('click', closeDialog);
 document.getElementById('action-investigate').addEventListener('click', () => doAction('investigate'));
-document.getElementById('action-interrogate').addEventListener('click', () => doAction('interrogate'));
+document.getElementById('action-interrogate').addEventListener('click', showChatView);
 document.getElementById('action-accuse').addEventListener('click', accusePassenger);
+
+elChatBackBtn.addEventListener('click', showDefaultView);
+elChatSendBtn.addEventListener('click', handleSendMessage);
+elChatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !elChatSendBtn.disabled) {
+        handleSendMessage();
+    }
+});
 
 // 键盘监听
 window.addEventListener('keydown', (e) => {
@@ -239,15 +261,9 @@ function gameLoop(timestamp) {
     elPlayer.style.bottom = (30 + player.y) + 'px'; // 基础高度 30 加上跳跃的 Y 值
 
     // 摄像机跟随 (居中玩家) 
-    // 平滑滚动处理
     const viewportWidth = document.querySelector('.viewport').clientWidth;
     let targetCameraX = player.x - viewportWidth / 2;
     
-    // 移除摄像机限制，让主角永远在屏幕正中间，这样在车头/车尾时就能看到外面的风景
-    // if (targetCameraX < 0) targetCameraX = 0;
-    // if (targetCameraX > WORLD_WIDTH - viewportWidth) targetCameraX = WORLD_WIDTH - viewportWidth;
-    
-    // 使用 left 而不是 transform，避免覆盖 CSS 里的 translateY(-50%)
     elGameWorld.style.left = -targetCameraX + 'px';
 
     // 距离检测更新 UI 状态
@@ -258,6 +274,8 @@ function gameLoop(timestamp) {
 
 function updateProximityStatus() {
     let someoneInRange = false;
+    
+    // 乘客距离检查
     PASSENGERS.forEach(p => {
         const el = document.getElementById(p.id);
         if (!el) return;
@@ -273,9 +291,25 @@ function updateProximityStatus() {
         }
     });
 
+    // 物品距离检查
+    INTERACTIVE_ITEMS.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (!el) return;
+        
+        const distance = Math.abs(player.x - item.x);
+        if (distance <= INTERACT_DISTANCE) {
+            el.classList.add('in-range');
+            el.classList.remove('out-of-range');
+            someoneInRange = true;
+        } else {
+            el.classList.add('out-of-range');
+            el.classList.remove('in-range');
+        }
+    });
+
     if (someoneInRange && !currentPassengerId) {
         elHint.classList.remove('hidden');
-        elHint.textContent = '按鼠标点击附近的人进行调查';
+        elHint.textContent = '点击附近的人或物进行调查';
     } else {
         elHint.classList.add('hidden');
     }
@@ -285,6 +319,8 @@ function updateProximityStatus() {
 
 function initScene() {
     elEntitiesContainer.innerHTML = '';
+    
+    // 渲染乘客
     PASSENGERS.forEach(p => {
         const pEl = document.createElement('div');
         pEl.id = p.id;
@@ -299,18 +335,46 @@ function initScene() {
         pEl.addEventListener('click', () => {
             const distance = Math.abs(player.x - p.x);
             if (distance <= INTERACT_DISTANCE) {
-                openDialog(p);
+                openDialog(p, false);
             } else {
-                // 距离太远，闪烁提示
-                elHint.textContent = '距离太远了，走近一点！';
-                elHint.classList.remove('hidden');
-                elHint.style.color = 'var(--accent-red)';
-                setTimeout(() => { elHint.style.color = ''; }, 500);
+                showProximityWarning();
             }
         });
         
         elEntitiesContainer.appendChild(pEl);
     });
+
+    // 渲染交互物品
+    INTERACTIVE_ITEMS.forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.id = item.id;
+        const isHigh = item.y > 100;
+        itemEl.className = `entity interactive-item out-of-range ${isHigh ? 'high-item' : ''}`;
+        itemEl.style.left = item.x + 'px';
+        
+        itemEl.innerHTML = `
+            <div class="item-sprite">${item.avatar}</div>
+            <div class="item-name">${item.name}</div>
+        `;
+        
+        itemEl.addEventListener('click', () => {
+            const distance = Math.abs(player.x - item.x);
+            if (distance <= INTERACT_DISTANCE) {
+                openDialog(item, true);
+            } else {
+                showProximityWarning();
+            }
+        });
+        
+        elEntitiesContainer.appendChild(itemEl);
+    });
+}
+
+function showProximityWarning() {
+    elHint.textContent = '距离太远了，走近一点！';
+    elHint.classList.remove('hidden');
+    elHint.style.color = 'var(--accent-red)';
+    setTimeout(() => { elHint.style.color = ''; }, 500);
 }
 
 function startLoop() {
@@ -322,6 +386,7 @@ function startLoop() {
     // 重置状态
     timeLeft = 60;
     currentPassengerId = null;
+    currentDialogIsItem = false;
     player.x = 1500; // 重置玩家出生点 (车尾)
     isGameRunning = true;
     passengerConversations = {}; // 重置聊天历史
@@ -346,7 +411,7 @@ function startLoop() {
     }, 1000);
 }
 
-// ================= UI与数据逻辑 (与旧版类似) =================
+// ================= UI与数据逻辑 =================
 
 function renderNotebook() {
     elClueList.innerHTML = '';
@@ -392,6 +457,8 @@ function subtractTime(amount) {
     }
 }
 
+// ================= 聊天与盘问逻辑 =================
+
 function showDefaultView() {
     elDialogChatView.classList.add('hidden');
     elDialogDefaultView.classList.remove('hidden');
@@ -406,7 +473,6 @@ function showChatView() {
     
     elChatName.textContent = p.name;
     
-    // 如果还没对话，初始化第一条辅助角色介绍消息
     if (!passengerConversations[p.id]) {
         passengerConversations[p.id] = [
             { role: 'assistant', content: `【${p.name}】${p.desc}` }
@@ -537,11 +603,29 @@ async function handleSendMessage() {
     }
 }
 
-function openDialog(passenger) {
+// ================= 弹窗交互动作逻辑 =================
+
+function openDialog(entity, isItem = false) {
     if (timeLeft <= 0) return;
-    currentPassengerId = passenger.id;
-    elDialogName.textContent = passenger.name;
-    elDialogText.textContent = passenger.desc + " 你想怎么做？";
+    currentPassengerId = entity.id;
+    currentDialogIsItem = isItem;
+    
+    elDialogName.textContent = entity.name;
+    elDialogText.textContent = entity.desc + " 你想怎么做？";
+    
+    const btnInvestigate = document.getElementById('action-investigate');
+    const btnInterrogate = document.getElementById('action-interrogate');
+    const btnAccuse = document.getElementById('action-accuse');
+    
+    if (isItem) {
+        btnInterrogate.style.display = 'none';
+        btnAccuse.style.display = 'none';
+        btnInvestigate.textContent = '打开/搜查 (-5秒)';
+    } else {
+        btnInterrogate.style.display = 'inline-block';
+        btnAccuse.style.display = 'inline-block';
+        btnInvestigate.textContent = '搜查 (-5秒)';
+    }
     
     elDialogDefaultView.classList.remove('hidden');
     elDialogChatView.classList.add('hidden');
@@ -555,13 +639,16 @@ function closeDialog() {
 }
 
 function doAction(actionType) {
-    const p = PASSENGERS.find(p => p.id === currentPassengerId);
-    if (!p) return;
+    const entity = currentDialogIsItem
+        ? INTERACTIVE_ITEMS.find(item => item.id === currentPassengerId)
+        : PASSENGERS.find(p => p.id === currentPassengerId);
+        
+    if (!entity) return;
     subtractTime(5);
-    const clueText = p.clues[actionType];
+    const clueText = entity.clues[actionType];
     elDialogText.textContent = clueText;
     
-    const logEntry = `【${p.name}】 ${clueText}`;
+    const logEntry = `【${entity.name}】 ${clueText}`;
     if (!unlockedClues.has(logEntry)) {
         unlockedClues.add(logEntry);
         renderNotebook();
@@ -570,7 +657,7 @@ function doAction(actionType) {
 
 function accusePassenger() {
     const p = PASSENGERS.find(p => p.id === currentPassengerId);
-    if (!p) return;
+    if (!p || currentDialogIsItem) return;
     
     if (p.isBomber) {
         // 胜利
@@ -580,7 +667,7 @@ function accusePassenger() {
         elVictoryOverlay.classList.remove('hidden');
     } else {
         // 失败
-        elDialogText.textContent = `“你疯了吗！我不是！” 你的举动引起了真正的炸弹客的恐慌，他提前按下了起爆钮...`;
+        elDialogText.textContent = `“你疯了吗！我不是！” 你的举动引起了真正的炸弹客的恐慌，她提前按下了起爆钮...`;
         document.getElementById('action-investigate').style.display = 'none';
         document.getElementById('action-interrogate').style.display = 'none';
         document.getElementById('action-accuse').style.display = 'none';
@@ -599,20 +686,20 @@ function triggerExplosion() {
     isGameRunning = false;
     closeDialog();
     
-    elGameLevel.classList.add('shake');
+    // 触发超大震撼抖动与全屏红黄色火光
+    elGameLevel.classList.remove('shake');
+    elGameLevel.classList.add('violent-shake');
     elExplosionLayer.classList.remove('hidden');
-    elExplosionLayer.style.opacity = 1;
+    elExplosionLayer.classList.add('active');
     
     setTimeout(() => {
-        elExplosionLayer.style.transition = 'opacity 2s';
-        elExplosionLayer.style.opacity = 0;
-        
+        // 1.5秒后切入复活重置视窗
         elResetOverlay.classList.remove('hidden');
         
         setTimeout(() => {
+            elExplosionLayer.classList.remove('active');
             elExplosionLayer.classList.add('hidden');
-            elExplosionLayer.style.transition = '';
-            elGameLevel.classList.remove('shake');
-        }, 2000);
-    }, 200);
+            elGameLevel.classList.remove('violent-shake');
+        }, 1500);
+    }, 1500);
 }

@@ -978,19 +978,84 @@ body {
     100% { transform: translate(10px, 10px) rotate(1deg); }
 }
 
-/* 爆炸特效 */
+/* 交互物品样式 */
+.interactive-item {
+    position: absolute;
+    bottom: 30px; /* 在车厢地板上 */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9;
+}
+
+/* 车顶物品 */
+.interactive-item.high-item {
+    bottom: unset;
+    top: 50px; /* 吊在车厢顶部置物架位置 */
+}
+
+.item-sprite {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.item-name {
+    margin-top: 5px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.interactive-item.in-range:hover .item-sprite {
+    transform: scale(1.2) translateY(-5px);
+    filter: drop-shadow(0 0 15px var(--accent-blue));
+}
+
+.interactive-item.in-range:hover .item-name {
+    opacity: 1;
+    color: white;
+}
+
+.interactive-item.out-of-range:hover {
+    opacity: 0.6;
+}
+
+/* ================= 升级版超震撼爆炸特效 ================= */
 #explosion-layer {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: white;
-    z-index: 999;
+    background: radial-gradient(circle, #ffffff 0%, #ffcc00 20%, #ff3b30 50%, #300000 80%, #000 100%);
+    opacity: 0;
+    z-index: 9999;
     pointer-events: none;
+    transition: none;
+}
+
+#explosion-layer.active {
+    opacity: 1;
+    animation: fiery-glow 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes fiery-glow {
+    0% { filter: brightness(4) contrast(2); transform: scale(1); }
+    15% { filter: brightness(2.5) contrast(1.5); transform: scale(1.1); }
+    50% { filter: brightness(1.2) contrast(1.2); background: radial-gradient(circle, #ff3b30 20%, #1a0000 70%, #000 100%); transform: scale(1.05); }
+    100% { filter: brightness(0); background: #000; transform: scale(1); }
 }
 
 #explosion-layer.hidden {
     display: none;
 }
 
+/* 屏幕常规小抖动 */
 .shake {
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
@@ -1000,4 +1065,17 @@ body {
     20%, 80% { transform: translate3d(10px, 5px, 0); }
     30%, 50%, 70% { transform: translate3d(-20px, -10px, 0); }
     40%, 60% { transform: translate3d(20px, 10px, 0); }
+}
+
+/* 升级版：1.5秒全屏幕超剧烈翻滚震动 */
+.violent-shake {
+    animation: violent-shake 1.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes violent-shake {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    5%, 25%, 45%, 65%, 85% { transform: translate(-30px, 18px) scale(1.06) rotate(-2.5deg); }
+    15%, 35%, 55%, 75% { transform: translate(30px, -18px) scale(1.1) rotate(2.5deg); }
+    10%, 50%, 90% { transform: translate(15px, 20px) scale(1.08) rotate(1deg); }
+    30%, 70% { transform: translate(-15px, -20px) scale(1.07) rotate(-1deg); }
 }
