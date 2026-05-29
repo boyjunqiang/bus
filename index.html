@@ -127,15 +127,42 @@
         <!-- 弹出交互框 -->
         <div id="dialog-overlay" class="hidden">
             <div class="dialog-box glass-panel">
-                <h2 id="dialog-name">乘客名字</h2>
-                <p id="dialog-text">乘客说的话或者你观察到的细节...</p>
-                
-                <!-- 操作选项 -->
-                <div class="actions">
-                    <button class="action-btn" id="action-investigate">搜查 (-5秒)</button>
-                    <button class="action-btn" id="action-interrogate">盘问 (-5秒)</button>
-                    <button class="action-btn accust-btn" id="action-accuse">指认炸弹客！</button>
-                    <button class="action-btn cancel-btn" id="action-close">离开</button>
+                <!-- 默认选项视图 -->
+                <div id="dialog-default-view">
+                    <h2 id="dialog-name">乘客名字</h2>
+                    <p id="dialog-text">乘客说的话或者你观察到的细节...</p>
+                    
+                    <!-- 操作选项 -->
+                    <div class="actions">
+                        <button class="action-btn" id="action-investigate">搜查 (-5秒)</button>
+                        <button class="action-btn" id="action-interrogate">盘问对话</button>
+                        <button class="action-btn accust-btn" id="action-accuse">指认炸弹客！</button>
+                        <button class="action-btn cancel-btn" id="action-close">离开</button>
+                    </div>
+                </div>
+
+                <!-- 盘问对话/聊天视图 -->
+                <div id="dialog-chat-view" class="hidden">
+                    <h2 id="chat-name">乘客名字</h2>
+                    <div class="chat-container">
+                        <div id="chat-history">
+                            <!-- 聊天记录动态插入 -->
+                        </div>
+                        <div id="chat-loading" class="hidden">
+                            <span class="loading-dot"></span>
+                            <span class="loading-dot"></span>
+                            <span class="loading-dot"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="输入你想问的问题..." autocomplete="off" />
+                        <button id="chat-send-btn">发送 (-5秒)</button>
+                    </div>
+
+                    <div class="chat-footer">
+                        <button class="action-btn" id="chat-back-btn">返回</button>
+                    </div>
                 </div>
             </div>
         </div>
