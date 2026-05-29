@@ -1,0 +1,839 @@
+:root {
+    --bg-dark: #0f1115;
+    --bg-darker: #08090b;
+    --text-main: #f0f0f0;
+    --text-muted: #9ba1a6;
+    --accent-red: #ff3b30;
+    --accent-blue: #0a84ff;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    background-color: var(--bg-darker);
+    color: var(--text-main);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 玻璃拟物通用类 */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* 视图容器管理 */
+.view-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    z-index: 10;
+}
+
+.view-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ================= 主菜单 ================= */
+#main-menu {
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #1a1d24 0%, var(--bg-darker) 100%);
+}
+
+.menu-content {
+    text-align: center;
+    max-width: 500px;
+}
+
+.game-title {
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.game-title span {
+    color: var(--accent-red);
+    text-shadow: 0 0 20px rgba(255, 59, 48, 0.6);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.rules {
+    margin-top: 40px;
+    text-align: left;
+    background: var(--glass-bg);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.rules h3 {
+    margin-bottom: 10px;
+    color: var(--accent-blue);
+}
+
+.rules p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.primary-btn {
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.4);
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+    background: #ff5248;
+    box-shadow: 0 0 25px rgba(255, 59, 48, 0.7);
+}
+
+.entity.near {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)); /* 靠近时白光提示 */
+    cursor: pointer;
+}
+
+.entity.near:hover {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1)); /* 鼠标悬停时白光更亮 */
+}
+
+/* ================= 游戏关卡 & UI ================= */
+#game-level {
+    background-color: #f0f0f0;
+    color: #111;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ccc;
+    z-index: 100;
+}
+
+#level-title {
+    color: #111;
+}
+
+#timer {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff3b30;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 0;
+    border: 2px solid #ff3b30;
+    z-index: 10;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+}
+
+.timer-danger {
+    color: var(--accent-red) !important;
+    border-color: var(--accent-red) !important;
+    box-shadow: 0 0 20px rgba(255, 59, 48, 0.5);
+    animation: pulse 1s infinite;
+}
+
+.hint-text {
+    margin-top: 10px;
+    color: var(--accent-blue);
+    font-weight: bold;
+    font-size: 0.9rem;
+    background: rgba(0,0,0,0.6);
+    padding: 4px 12px;
+    border-radius: 0;
+    transition: opacity 0.2s;
+}
+
+.hint-text.hidden {
+    opacity: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ================= 2D 游戏世界 ================= */
+.viewport {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    overflow: hidden; /* 隐藏超出屏幕的部分 */
+    background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 50%, #e0f7fa 100%); /* 明亮的白天天空 */
+}
+
+/* 外部大马路背景（在车厢底下流动） */
+.viewport::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35%; /* 底部 35% 是马路 */
+    background: #666; /* 明亮的灰白色柏油路 */
+    background-image: repeating-linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.9) 0,
+        rgba(255, 255, 255, 0.9) 40px,
+        transparent 40px,
+        transparent 80px
+    );
+    background-size: 100% 10px; /* 马路线厚度 */
+    background-position: 0 50%; /* 画在马路中间 */
+    background-repeat: no-repeat;
+    border-top: 5px solid #444;
+    animation: scroll-road 0.3s infinite linear;
+    z-index: 1;
+}
+
+@keyframes scroll-road {
+    0% { background-position: 0 50%; }
+    100% { background-position: 80px 50%; }
+}
+
+/* ================= 远景装饰 ================= */
+.cloud-layer {
+    position: absolute;
+    top: 15%; /* 稍微高一点 */
+    left: 0;
+    width: 200%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    font-size: 80px;
+    color: white;
+    opacity: 0.9;
+    animation: scroll-cloud 15s infinite linear;
+    z-index: 0;
+}
+
+.cloud-layer::before {
+    content: "☁️ 　 　 ☁️☁️ 　 　 ☁️ 　 　 　 ☁️ 　 　 ☁️";
+    white-space: nowrap;
+}
+
+@keyframes scroll-cloud {
+    0% { background-position: 0 0; }
+    100% { background-position: 400px 0; }
+}
+
+.tree-layer {
+    position: absolute;
+    bottom: 35%;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: repeating-linear-gradient(
+        to right,
+        transparent 0,
+        #2e7d32 20px, /* 绿色树木 */
+        #1b5e20 50px,
+        transparent 70px,
+        transparent 250px
+    );
+    animation: scroll-tree 1.5s infinite linear;
+    z-index: 0;
+}
+
+@keyframes scroll-tree {
+    0% { background-position: 0 0; }
+    100% { background-position: 250px 0; }
+}
+
+/* 飞驰的其他车辆 */
+.traffic-layer {
+    position: absolute;
+    bottom: 5%; /* 再降到屏幕最下方，贴着屏幕底边 */
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 2; /* 在马路(1)之上，在公交车(3)之下 */
+}
+
+.passing-car {
+    position: absolute;
+    bottom: 25px; /* 抬高给大轮子留空间 */
+    width: 450px;
+    height: 120px;
+    background: #ff3b30; /* 红色车身 */
+    border-radius: 90px 40px 15px 15px; /* 车头在左侧，向左行驶 */
+    animation: car-pass 3s infinite linear;
+    opacity: 0.9;
+    z-index: 2;
+}
+
+/* 汽车车窗 (用 ::after 伪元素画) */
+.passing-car::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 30px; /* 车窗靠近车头(左侧) */
+    width: 200px;
+    height: 45px;
+    background: #222;
+    border-radius: 45px 30px 5px 5px; /* 车窗也跟着反转 */
+}
+
+/* 汽车前大灯 */
+.passing-car::before {
+    content: ''; position: absolute; top: 50px; right: 100%; width: 15px; height: 25px; background: rgba(255,255,100,0.9); border-radius: 10px 0 0 10px; box-shadow: -20px 0 40px yellow;
+}
+
+/* 汽车大轮子 */
+.car-wheel {
+    position: absolute;
+    bottom: -35px;
+    width: 70px;
+    height: 70px;
+    background: #111;
+    border: 8px solid #333;
+    border-radius: 50%;
+    z-index: 3;
+    animation: wheel-spin 0.2s infinite linear;
+}
+
+/* 统一动画时间，利用不同的负数 delay 间隔开 */
+/* 负数 delay 可以让动画在加载时就像是已经播放了对应的时间，完美解决一开始扎堆停留在原地的 BUG */
+.car1 { background: #0a84ff; animation-duration: 6s; animation-delay: 0s; }
+.car2 { background: #ffcc00; width: 500px; height: 130px; animation-duration: 6s; animation-delay: -2s; }
+.car3 { background: #34c759; animation-duration: 6s; animation-delay: -4s; }
+
+@keyframes car-pass {
+    0% { left: 120%; } /* 从车头方向开过来（向右行驶，和公交车擦肩而过） */
+    100% { left: -50%; } /* 消失在车尾方向 */
+}
+
+.bus-interior {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 1600px; /* 公交车总长度 */
+    height: 400px;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 8px solid #333;
+    border-bottom: 12px solid #222;
+    /* 地板分界线 */
+    box-shadow: inset 0 -40px 0 0 rgba(0,0,0,0.5);
+    transition: left 0.1s linear; /* 平滑跟随摄像机 */
+    z-index: 3; /* 在马路和超车汽车的上层 */
+    animation: bus-bump 0.4s infinite alternate ease-in-out; /* 增加车厢颠簸感 */
+}
+
+@keyframes bus-bump {
+    0% { transform: translateY(-50%); }
+    100% { transform: translateY(calc(-50% + 3px)); }
+}
+
+/* 背景窗户 (变成透明玻璃) */
+.window {
+    position: absolute;
+    top: 40px;
+    width: 200px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.15); /* 更亮一点的半透明玻璃 */
+    backdrop-filter: blur(2px); /* 轻微毛玻璃效果，让外面的风景变得真实 */
+    -webkit-backdrop-filter: blur(2px);
+    border: 10px solid #333; /* 加厚窗框 */
+    border-radius: 0;
+    overflow: hidden;
+}
+
+/* 车厢首尾的大片挡风玻璃 */
+.end-glass {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 10px solid #222; /* 加厚玻璃边框 */
+    border-right: 10px solid #222; /* 加厚玻璃边框 */
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 8;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.2); /* 玻璃边缘反光 */
+}
+
+/* 公交车立杆和扶手 */
+.pole {
+    position: absolute;
+    bottom: 40px;
+    width: 4px; /* 变成纯粹的竖线 */
+    height: 100%;
+    background: #333; /* 扁平深色，不再是管子 */
+    z-index: 5;
+    border-radius: 0;
+}
+
+.handrail {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(to bottom, #888, #ddd, #666);
+    z-index: 6;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+}
+
+/* 座位 */
+.seat {
+    position: absolute;
+    bottom: 30px; /* 和地板对齐 */
+    width: 90px;
+    height: 100px;
+    background: linear-gradient(to bottom, #0a3d62, #062b45);
+    border: 3px solid #041f33;
+    border-radius: 0;
+    z-index: 8; /* 在乘客（z-index 10）的后面，实现坐着的效果 */
+    box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+}
+
+/* 座位靠背 */
+.seat::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 74px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+}
+
+/* 司机专属座位（朝向左边） */
+.driver-seat {
+    transform: scaleX(-1);
+    z-index: 4; /* 在司机驾驶舱后面一点 */
+}
+
+/* 公交车轮子 */
+.wheel {
+    position: absolute;
+    bottom: -40px; /* 沉入车底的马路上 */
+    width: 80px;
+    height: 80px;
+    background: #111;
+    border: 8px solid #333;
+    border-radius: 50%;
+    z-index: -1;
+    animation: wheel-spin 0.5s infinite linear;
+}
+
+/* 轮毂/辐条 */
+.wheel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 10px;
+    background: #444;
+    transform: translate(-50%, -50%);
+}
+.wheel::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 60px;
+    background: #444;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes wheel-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); } /* 逆时针转，让车向左开 */
+}
+
+/* 轮胎粒子特效（扬尘） */
+.dust-trail {
+    position: absolute;
+    bottom: -40px;
+    width: 80px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(200,200,200,0.4) 0%, rgba(200,200,200,0) 70%);
+    animation: dust-blow 0.4s infinite linear;
+    z-index: -2;
+}
+
+@keyframes dust-blow {
+    0% { transform: translateX(20px) scale(0.5); opacity: 0.8; }
+    100% { transform: translateX(150px) scale(2.5); opacity: 0; } /* 尘土往右边（车后方）飘散 */
+}
+
+/* 司机区域 */
+.driver-cabin {
+    position: absolute;
+    bottom: 30px;
+    width: 120px;
+    height: 150px;
+    border-right: 4px solid #333;
+    background: rgba(0,0,0,0.4);
+    z-index: 5;
+}
+
+.steering-wheel {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    width: 15px;
+    height: 60px;
+    background: #555;
+    border-radius: 0;
+    transform: rotate(-20deg);
+}
+
+.driver {
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+    font-size: 3.5rem;
+    z-index: 7;
+    transform: scaleX(-1); /* 脸朝左 */
+    opacity: 0; /* 隐藏静态HTML里的司机图标，因为 JS 会在同一个位置生成一个可以交互的司机 */
+}
+
+/* 游戏实体（主角和乘客） */
+.entity {
+    position: absolute;
+    bottom: 30px; /* 站在地板上 */
+    transform: translateX(-50%); /* 中心对齐X坐标 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 主角 */
+.player-char {
+    z-index: 20;
+    transition: transform 0.1s; /* 转身效果 */
+}
+
+.player-sprite {
+    width: 60px;
+    height: 120px;
+    background: var(--accent-blue);
+    border-radius: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.4);
+}
+
+.walking .player-sprite {
+    animation: walk-bob 0.4s infinite alternate;
+}
+
+@keyframes walk-bob {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-10px); }
+}
+
+/* 蹲下效果 */
+.player-char.crouching .player-sprite {
+    height: 70px;
+    margin-top: 50px;
+    background: #005bb5; /* 颜色稍微变深一点表示蹲下 */
+}
+
+.player-sprite {
+    transition: height 0.15s ease, margin-top 0.15s ease, background 0.15s ease;
+}
+
+/* 乘客 (可交互物) */
+.passenger {
+    z-index: 10;
+    cursor: pointer;
+}
+
+.passenger-sprite {
+    width: 70px;
+    height: 110px;
+    background: #333;
+    border-radius: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    border: 2px solid #555;
+    transition: all 0.2s ease;
+}
+
+.passenger-name {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #888;
+    background: rgba(0,0,0,0.8);
+    padding: 2px 8px;
+    border-radius: 0;
+}
+
+/* 距离足够时的 Hover 效果 */
+.passenger.in-range:hover .passenger-sprite {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.6);
+    transform: scale(1.05);
+}
+
+.passenger.in-range:hover .passenger-name {
+    color: white;
+}
+
+/* 距离太远时的 Hover 效果 */
+.passenger.out-of-range:hover .passenger-sprite {
+    opacity: 0.5;
+}
+
+
+/* ================= 笔记本区域 ================= */
+#clues-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 250px;
+    background: rgba(255, 255, 255, 0.95); /* 白色背景 */
+    border: 2px solid #ccc;
+    color: #111;
+    border-radius: 0; /* 完全尖锐的长方形 */
+    padding: 15px;
+    z-index: 50;
+    display: none; /* 游戏开始后显示 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#clues-panel h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #111;
+    padding-bottom: 5px;
+}
+
+#clue-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+}
+
+.clue-item {
+    background: rgba(0, 0, 0, 0.05); /* 极浅的灰色 */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 0; /* 完全尖锐的长方形 */
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.empty-clue {
+    background: transparent !important;
+    border-left: none !important;
+    color: var(--text-muted) !important;
+    font-style: italic;
+}
+
+/* ================= 弹窗/覆盖层 ================= */
+#dialog-overlay, #reset-overlay, #victory-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#dialog-overlay.hidden, #reset-overlay.hidden, #victory-overlay.hidden {
+    display: none;
+}
+
+.dialog-box, .reset-box, .victory-box {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    text-align: center;
+    border-radius: 0;
+}
+
+.dialog-box h2 {
+    margin-bottom: 15px;
+    color: white;
+}
+
+.dialog-box p {
+    margin-bottom: 30px;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.action-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 0;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.accust-btn {
+    background: rgba(255, 59, 48, 0.2);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+}
+
+.accust-btn:hover {
+    background: var(--accent-red);
+    color: white;
+}
+
+.cancel-btn {
+    grid-column: span 2;
+    margin-top: 10px;
+}
+
+/* ================= 爆炸特效 ================= */
+.explosion-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.explosion-container::before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 10%, #ffcc00 30%, #ff3b30 60%, #330000 100%);
+    box-shadow: 0 0 100px 50px #ff3b30;
+    transform: scale(0);
+    opacity: 1;
+}
+
+.explode-anim { display: flex !important; }
+.explode-anim::before {
+    animation: explode-scale 1.5s ease-out forwards;
+}
+
+@keyframes explode-scale {
+    0% { transform: scale(0); opacity: 1; filter: brightness(3); }
+    10% { transform: scale(20); opacity: 1; filter: brightness(2.5); }
+    30% { transform: scale(60); opacity: 1; filter: brightness(2); }
+    70% { transform: scale(150); opacity: 0.9; filter: brightness(1); background: #ff0000; }
+    100% { transform: scale(200); opacity: 0; }
+}
+
+.flash-white {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 10000;
+    pointer-events: none; opacity: 0;
+    animation: flash-fade 1.5s ease-out forwards;
+}
+
+@keyframes flash-fade {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    40% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.screen-shake {
+    animation: violent-shake 0.1s ease-in-out infinite;
+}
+
+@keyframes violent-shake {
+    0% { transform: translate(0, 0) rotate(0); }
+    25% { transform: translate(-10px, 15px) rotate(-1deg); }
+    50% { transform: translate(15px, -10px) rotate(1deg); }
+    75% { transform: translate(-15px, -15px) rotate(-1deg); }
+    100% { transform: translate(10px, 10px) rotate(1deg); }
+}
+
+/* 爆炸特效 */
+#explosion-layer {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: white;
+    z-index: 999;
+    pointer-events: none;
+}
+
+#explosion-layer.hidden {
+    display: none;
+}
+
+.shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-5px, 0, 0); }
+    20%, 80% { transform: translate3d(10px, 5px, 0); }
+    30%, 50%, 70% { transform: translate3d(-20px, -10px, 0); }
+    40%, 60% { transform: translate3d(20px, 10px, 0); }
+}
